@@ -183,13 +183,23 @@ const cancelAppointment = async(req,res) =>{
     }
 }
 
-const razorpayInstance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret:process.env.RAZORPAY_KEY_SECRET
-})
+let razorpayInstance = null;
+
+// Initialize Razorpay only if credentials are valid
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET && 
+    process.env.RAZORPAY_KEY_ID !== 'abc' && process.env.RAZORPAY_KEY_SECRET !== 'abc') {
+    razorpayInstance = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    })
+}
 
 const paymentRazorpay = async(req,res)=>{
     try {
+        if (!razorpayInstance) {
+            return res.json({success:false , message:'Payment gateway not configured'})
+        }
+        
         const {appointmentId} = req.body
         const appointmentData = await appointmentModel.findById(appointmentId)
         if(!appointmentData||appointmentData.cancelled){
@@ -197,7 +207,7 @@ const paymentRazorpay = async(req,res)=>{
         }
         const options = {
             amount : appointmentData.amount*100,
-            currency: process.env.CURRENCY,
+            currency: process.env.CURRENCY || 'INR',
             reciept:appointmentId
         }
         const order = await razorpayInstance.orders.create(options)
@@ -211,6 +221,10 @@ const paymentRazorpay = async(req,res)=>{
 
 const verifyRazorpay = async(req,res)=>{
     try {
+        if (!razorpayInstance) {
+            return res.json({success:false , message:'Payment gateway not configured'})
+        }
+        
         const {razorpay_order_id} = req.body
         const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
         if(orderInfo.status==="paid"){

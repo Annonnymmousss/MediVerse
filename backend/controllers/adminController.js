@@ -11,17 +11,19 @@ import userModel from '../models/userModel.js'
 
 const addDoctor=async(req,res)=>{
     try {
+        console.log('Starting addDoctor function...')
         const {name,email,speciality,fees,address,about,experience,password,degree,date} = req.body
         const imageFile = req.file
 
+        console.log('Request body:', req.body)
+        console.log('Image file:', imageFile)
+
         if(!name||!email||!speciality||!fees||!address||!about||!experience||!password||!degree){
             return res.json({success:false , message:"Missing Details"})
-
         }
 
         if (!validator.isEmail(email)){
             return res.json({success:false , message:"Please enter a valid email"})
-
         }
 
         if(password.length<8){
@@ -29,16 +31,34 @@ const addDoctor=async(req,res)=>{
         }
 
         //hashing doctor password
-
+        console.log('Hashing password...')
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
         
-
         //uploading image to cloudinary
+        console.log('Uploading to Cloudinary...')
+        console.log('Cloudinary config:', {
+            cloud_name: process.env.CLOUDINARY_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY ? '***' : 'NOT SET',
+            api_secret: process.env.CLOUDINARY_SECRET_KEY ? '***' : 'NOT SET'
+        })
+        
+        let imageUrl = 'https://via.placeholder.com/150x150?text=Doctor'
+        
+        if (imageFile && process.env.CLOUDINARY_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_SECRET_KEY) {
+            try {
+                const imageUpload = await cloudinary.uploader.upload(imageFile.path , {resource_type:'image'})
+                imageUrl = imageUpload.secure_url
+                console.log('Image uploaded successfully:', imageUrl)
+            } catch (cloudinaryError) {
+                console.log('Cloudinary upload failed:', cloudinaryError)
+                // Continue with default image
+            }
+        } else {
+            console.log('Skipping Cloudinary upload - missing credentials or file')
+        }
 
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path , {resource_type:'image'})
-        const imageUrl = imageUpload.secure_url
-
+        console.log('Creating doctor data...')
         const doctorData = {
             name,
             email,
@@ -51,18 +71,18 @@ const addDoctor=async(req,res)=>{
             degree,
             image:imageUrl,
             date,
-            
         }
 
+        console.log('Saving to MongoDB...')
         const newDoctor = new doctorModel(doctorData)
         await newDoctor.save()
+        console.log('Doctor saved successfully!')
 
         res.json({success:true , message:"Doctor added"})
-
         
     } catch (error) {
-        console.log(error)
-        res.json({success:false , message:error})
+        console.log('Error in addDoctor:', error)
+        res.json({success:false , message: error.message || error})
     }
 }
 
