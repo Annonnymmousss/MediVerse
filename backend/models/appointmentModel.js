@@ -11,6 +11,21 @@ const appointmentSchema = new mongoose.Schema({
     cancelled:{ type : Boolean , default : false},
     payment:{ type : Boolean , default : false},
     isCompleted:{ type : Boolean , default : false},
+    aiSessionId: { type: String }, // Reference to AI session
+    preVisitNotes: {
+        agent1Summary: Object,
+        agent2Analysis: Object,
+        agent3Report: Object
+    },
+    testReports: [{
+        fileName: String,
+        fileUrl: String,
+        uploadedAt: Date,
+        analyzedByAgent3: Boolean
+    }],
+    consultationNotes: String,
+    followUpRequired: Boolean,
+    followUpDate: String
 })
 
 

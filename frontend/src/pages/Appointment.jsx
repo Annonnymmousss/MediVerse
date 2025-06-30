@@ -16,9 +16,8 @@ const Appointment = () => {
   const [docSlot, setdocSlot] = useState([])
   const [slotIndex, setslotIndex] = useState(0)
   const [slotTime, setslotTime] = useState('')
+  const [isBooking, setIsBooking] = useState(false)
   
-
-
 
   const fetchDocInfo = async() => {
 
@@ -30,19 +29,18 @@ const Appointment = () => {
   const getAvailaibleSlot = async() => {
       setdocSlot([])
       for(let i=0 ; i<7 ; i++){
-        //getting current date
+     
       const today = new Date()
 
-      //getting date with index
       let currentDate = new Date(today)
       currentDate.setDate(today.getDate()+i)
 
-      //setting end time of the date with index 
+       
       let endTime = new Date()
       endTime.setDate(today.getDate()+i)
       endTime.setHours(21,0,0,0)
 
-      //setting hours 
+      
       if(today.getDate()===currentDate.getDate()){
         currentDate.setHours(currentDate.getHours()>10?currentDate.getHours()+1:10)
         currentDate.setMinutes(currentDate.getMinutes()>30?30:0)
@@ -61,13 +59,13 @@ const Appointment = () => {
       });
       
 
-      //add slot to array 
+ 
       timeSlots.push({
         datetime: new Date(currentDate),
         time: formattedTime
       })
 
-      //increment current time by 30 minutes 
+     
       currentDate.setMinutes(currentDate.getMinutes()+30)
     }
 
@@ -82,23 +80,53 @@ const Appointment = () => {
       return navigate('/login')
     }
 
+    if(!slotTime){
+      toast.error("Please select a time slot")
+      return
+    }
+
+    setIsBooking(true)
+
     try {
       const date = docSlot[slotIndex][0].datetime
       const day = date.getDate()
       const month = date.getMonth() + 1
       const year = date.getFullYear()
       const slotDate = day + "_" + month + "_" + year
+      
       const {data} = await axios.post(backendUrl + '/api/user/book-appointment' , {docId , slotDate , slotTime} , {headers:{token}})
+      
       if(data.success){
         toast.success(data.message)
+        
+     
+        try {
+          const aiResponse = await axios.post(
+            backendUrl + '/api/ai/start-session', 
+            { appointmentId: data.appointmentId }, 
+            { headers: { token } }
+          );
+          
+          if (aiResponse.data.success) {
+            toast.info("Starting pre-appointment assessment...")
+            
+            navigate(`/ai-chat/${aiResponse.data.sessionId}`);
+          }
+        } catch (error) {
+          console.error('Error starting AI session:', error);
+         
+          navigate('/my-appointments')
+        }
+        
         getDoctorsData()
-        navigate('/my-appointments')
       }else{
         toast.error(data.message)
       }
     } catch (error) {
       console.log(error)
       toast.error(error.message)
+    } finally {
+      setIsBooking(false)
     }
   }
 
@@ -114,6 +142,7 @@ const Appointment = () => {
   useEffect(()=>{
       console.log(docSlot)
   },[docSlot])
+  
   return docInfo&& (
     <div>
       <div className='flex flex-col sm:flex-row gap-4'>
@@ -160,7 +189,13 @@ const Appointment = () => {
             </p>
           ))}
         </div>
-        <button onClick={bookAppointment} className='bg-indigo-500 text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an appointment</button>
+        <button 
+          onClick={bookAppointment} 
+          disabled={isBooking}
+          className='bg-indigo-500 text-white text-sm font-light px-14 py-3 rounded-full my-6 hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed'
+        >
+          {isBooking ? 'Booking...' : 'Book an appointment'}
+        </button>
       </div>
       <RelatedDoc docId={docId} speciality={docInfo.speciality}/>
     </div>

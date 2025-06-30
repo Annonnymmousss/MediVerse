@@ -8,7 +8,19 @@ const userSchema = new mongoose.Schema({
     address:{type:Object , default:{line1:'' , line2:''}},
     gender:{type:String , default:'Male'},
     phone:{type:String , default:'00000000000'},
-    dob:{type:String , default:'not selected'}
+    dob:{type:String , default:'not selected'},
+    medicalHistory: {
+        chronicConditions: [String],
+        allergies: [String],
+        currentMedications: [String],
+        previousSurgeries: [String],
+        familyHistory: [String]
+    },
+    emergencyContact: {
+        name: String,
+        relationship: String,
+        phone: String
+    }
 })
 
 
