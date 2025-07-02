@@ -7,6 +7,7 @@ import { AppContext } from '../../context/AppContext'
 import PreVisitNotesModal from '../../components/PreVisitNotesModal'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import {useNavigate} from 'react-router-dom'
 
 const DoctorDashboard = () => {
   const { dashData, setdashData, getDashData, dtoken , cancelAppointment , completeAppointment, backendUrl } = useContext(DoctorContext)
@@ -14,6 +15,7 @@ const DoctorDashboard = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null)
   const [showPreVisitModal, setShowPreVisitModal] = useState(false)
   const [isRunningAgent2, setIsRunningAgent2] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (dtoken) {
@@ -63,6 +65,11 @@ const DoctorDashboard = () => {
     }
   }
 
+  const joinVideoCall = async(appointmentId)=>{
+      console.log("Joined Video call")
+      navigate(`/video-chat/${appointmentId}`)
+    }
+
   return dashData && (
     <div className='m-5'>
       <div className='flex flex-wrap gap-3'>
@@ -111,6 +118,7 @@ const DoctorDashboard = () => {
                         : <div className='flex'>
                           <img onClick={() => cancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
                           <img onClick={() => completeAppointment(item._id)} className='w-10 cursor-pointer' src={assets.tick_icon} alt="" />
+                          <button onClick={()=>joinVideoCall(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white transition-all duration-300'>Start Appointment</button>
                         </div>
                   }
                 </div>
