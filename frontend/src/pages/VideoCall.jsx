@@ -133,52 +133,144 @@ const VideoChat = () => {
     };
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted, handleNegotiationIncoming, handleNegotiationFinal]);
 
-  return (
-    <div>
-      <h1>Video Chat</h1>
-      <h4>{remoteSocketId ? "Connected" : "Waiting for someone to join..."}</h4>
-      {remoteSocketId && <button onClick={handleCallUser}>Call</button>}
-      <div>
-        {myStream && (
-          <div>
-            <h2>My Stream</h2>
-            <video
-              autoPlay
-              playsInline
-              muted
-              width="300"
-              height="200"
-              ref={(videoEl) => {
-                if (videoEl) videoEl.srcObject = myStream;
-              }}
-            />
-          </div>
-        )}
-        {remoteStream && (
-          <div>
-            <h2>Remote Stream</h2>
-            {/* <video
-              autoPlay
-              playsInline
-              width="300"
-              height="200"
-              ref={(videoEl) => {
-                if (videoEl) videoEl.srcObject = remoteStream;
-              }}
-            /> */}
-            <video
-              ref={remoteVideoRef}
-              autoPlay
-              playsInline
-              width="300"
-              height="200"
-              controls
-            />
-          </div>
-        )}
-      </div>
+  // return (
+  //   <div>
+  //     <h1>Video Chat</h1>
+  //     <h4>{remoteSocketId ? "Connected" : "Waiting for someone to join..."}</h4>
+  //     {remoteSocketId && <button onClick={handleCallUser}>Call</button>}
+  //     <div>
+  //       {myStream && (
+  //         <div>
+  //           <h2>My Stream</h2>
+  //           <video
+  //             autoPlay
+  //             playsInline
+  //             muted
+  //             width="300"
+  //             height="200"
+  //             ref={(videoEl) => {
+  //               if (videoEl) videoEl.srcObject = myStream;
+  //             }}
+  //           />
+  //         </div>
+  //       )}
+  //       {remoteStream && (
+  //         <div>
+  //           <h2>Remote Stream</h2>
+  //           {/* <video
+  //             autoPlay
+  //             playsInline
+  //             width="300"
+  //             height="200"
+  //             ref={(videoEl) => {
+  //               if (videoEl) videoEl.srcObject = remoteStream;
+  //             }}
+  //           /> */}
+  //           <video
+  //             ref={remoteVideoRef}
+  //             autoPlay
+  //             playsInline
+  //             width="300"
+  //             height="200"
+  //             controls
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
+return (
+  <div
+    style={{
+      backgroundColor: "#f8faff",
+      borderRadius: "12px",
+      padding: "30px 20px",
+      textAlign: "center",
+      boxShadow: "0 0 10px rgba(0,0,0,0.05)",
+      maxWidth: "500px",
+      margin: "auto",
+      marginTop: "30px",
+    }}
+  >
+    <h2 style={{ color: "#4b4f56", marginBottom: "10px" }}>
+      🩺 <span style={{ fontWeight: 600 }}>MediVerse Video Chat</span>
+    </h2>
+
+    <p
+      style={{
+        color: remoteSocketId ? "#27ae60" : "#999",
+        fontWeight: 500,
+        marginBottom: "20px",
+      }}
+    >
+      {remoteSocketId ? "✅ Connected to Doctor" : "🔄 Waiting for doctor to join..."}
+    </p>
+
+    <button
+      onClick={handleCallUser}
+      disabled={!remoteSocketId}
+      style={{
+        backgroundColor: remoteSocketId ? "#3498db" : "#bdc3c7",
+        color: "white",
+        border: "none",
+        padding: "12px 28px",
+        fontSize: "16px",
+        borderRadius: "8px",
+        cursor: remoteSocketId ? "pointer" : "not-allowed",
+        transition: "background-color 0.3s ease",
+        marginBottom: "30px",
+      }}
+    >
+      📞 Call
+    </button>
+
+    <div style={{ display: "flex", flexDirection: "column", gap: "25px" }}>
+      {myStream && (
+        <div>
+          <h3 style={{ marginBottom: "8px", color: "#2c3e50" }}>🎥 My Stream</h3>
+          <video
+            autoPlay
+            playsInline
+            muted
+            width="100%"
+            height="auto"
+            style={{
+              maxWidth: "100%",
+              border: "3px solid #2980b9",
+              borderRadius: "10px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+            }}
+            ref={(videoEl) => {
+              if (videoEl) videoEl.srcObject = myStream;
+            }}
+          />
+        </div>
+      )}
+
+      {remoteStream && (
+        <div>
+          <h3 style={{ marginBottom: "8px", color: "#2c3e50" }}>🧑‍⚕️ Remote Stream</h3>
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            controls
+            width="100%"
+            height="auto"
+            style={{
+              maxWidth: "100%",
+              border: "3px solid #2ecc71",
+              borderRadius: "10px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
+
 };
 
 export default VideoChat;
