@@ -19,7 +19,7 @@ const Navbar = () => {
     const navigate = useNavigate()
   return (
     <div className="flex item-center justify-between text-sm py-4 mb-5 border-b border-b-grey-400 ">
-        <img className="w-44 cursor-pointer"src={assets.logo}/>
+        <img className='w-15 sm:w-15 cursor-pointer' src={assets.mediverse}/>
         <ul className="hidden md:flex items-start gap-5 font-medium mt-3 ">
             <NavLink to={'/'}>
                 <li className="'py-1">HOME</li>
