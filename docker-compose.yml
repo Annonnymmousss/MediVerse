@@ -33,3 +33,5 @@ services:
       - "3000:3000"
     depends_on:
       - disease_prediction_backend
+    env_file:
+      - ./backend/.env
