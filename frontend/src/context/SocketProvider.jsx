@@ -14,7 +14,7 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = (props) => {
-  const socket = useMemo(() => io(BackendUrl), []);
+  const socket = useMemo(() => io(backendUrl), []);
 
   return (
     <SocketContext.Provider value={socket}>
