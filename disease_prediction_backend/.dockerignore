@@ -1,0 +1,35 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.joblib
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker stuff
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# IDE/editor files
+.vscode/
+*.swp
+*.swo
+.idea/
