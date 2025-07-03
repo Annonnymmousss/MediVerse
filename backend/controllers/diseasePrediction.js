@@ -1,3 +1,4 @@
+import axios from 'axios';
 const heart_prediction = async(req,res)=>{
     try {
     const response = await axios.post('http://127.0.0.1:5000/predict/heart', {

@@ -19,6 +19,62 @@ const AIChat = () => {
     const messagesEndRef = useRef(null);
     const [endingAssessment, setEndingAssessment] = useState(false);
 
+
+    const [testResults, setTestResults] = useState({ diabetes: null, heart: null });
+    const [showTestModal, setShowTestModal] = useState(false);
+    const [testType, setTestType] = useState("diabetes"); 
+    const [formData, setFormData] = useState({});
+    const [testResult, setTestResult] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const toggleTestType = () => {
+    setTestType(prev => (prev === "diabetes" ? "heart" : "diabetes"));
+    setFormData({});
+    setTestResult(null);
+    };
+
+    const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async () => {
+    setLoading(true);
+    try {
+        const fields =
+        testType === "diabetes"
+            ? ["pregnancies", "glucose", "blood_pressure", "skin_thickness", "insulin", "bmi", "diabetes_pedigree_function", "age"]
+            : ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"];
+
+        const features = fields.map((field) => parseFloat(formData[field]) || 0);
+
+        const res = await fetch(`${backendUrl}/api/predict/${testType}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ features })
+        });
+
+        const data = await res.json();
+        console.log(`${testType}:`, data.is_diabetic ?? data.has_disease);
+
+        const resultMessage = data.is_diabetic !== undefined
+        ? `${testType}: ${data.is_diabetic}`
+        : data.has_disease !== undefined
+        ? `${testType} disease : ${data.has_disease}`
+        : "Analysis complete";
+
+        setTestResult(resultMessage);
+        toast.success(resultMessage);
+    } catch (err) {
+        console.error(err);
+        setTestResult("Something went wrong.");
+    }
+    setLoading(false);
+    };
+
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -312,8 +368,104 @@ const AIChat = () => {
                         Upload Test Reports
                     </button>
                 )}
+
+                {/* Test Button */}
+                {!testResult && (
+                <button
+                    onClick={() => setShowTestModal(true)}
+                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                    Test Diabetes or Heart Disease
+                </button>
+                )}
+                {testResult && (
+                <div className="text-sm text-green-700 font-semibold ml-4">
+                     {testResult}
+                </div>
+                
+                )}
             </div>
+                            {/* Modal */}
+                {showTestModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-[95%] max-w-2xl overflow-y-auto max-h-[90vh]">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold">
+                        Test for {testType === "diabetes" ? "Diabetes" : "Heart Disease"}
+                        </h2>
+                        <button
+                        onClick={() => setShowTestModal(false)}
+                        className="text-gray-500 hover:text-gray-800 text-lg"
+                        >
+                        ✖
+                        </button>
+                    </div>
+
+                    {/* Toggle */}
+                    <div className="flex justify-between mb-4">
+                        <span className={`font-semibold ${testType === "diabetes" ? "text-blue-600" : "text-gray-400"}`}>Diabetes</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={testType === "heart"}
+                            onChange={toggleTestType}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 transition-all" />
+                        <span className="ml-2 text-sm font-medium text-gray-700">Toggle</span>
+                        </label>
+                        <span className={`font-semibold ${testType === "heart" ? "text-blue-600" : "text-gray-400"}`}>Heart</span>
+                    </div>
+
+                    {/* Input Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {testType === "diabetes" ? (
+                        <>
+                            {["pregnancies", "glucose", "blood_pressure", "skin_thickness", "insulin", "bmi", "diabetes_pedigree_function", "age"].map((field) => (
+                            <input
+                                key={field}
+                                name={field}
+                                type="number"
+                                step="any"
+                                placeholder={field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                                onChange={handleInputChange}
+                                className="w-full px-4 py-2 border rounded"
+                            />
+                            ))}
+                        </>
+                        ) : (
+                        <>
+                            {["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"].map((field) => (
+                            <input
+                                key={field}
+                                name={field}
+                                type="number"
+                                step="any"
+                                placeholder={field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                                onChange={handleInputChange}
+                                className="w-full px-4 py-2 border rounded"
+                            />
+                            ))}
+                        </>
+                        )}
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="mt-6 flex justify-end">
+                        <button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600 disabled:bg-gray-400"
+                        >
+                        {loading ? "Testing..." : "Analyse"}
+                        </button>
+                    </div>
+                    </div>
+                </div>
+                )}
+
         </div>
+        
     );
 };
 

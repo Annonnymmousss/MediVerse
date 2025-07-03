@@ -134,57 +134,6 @@ const VideoChat = () => {
     };
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted, handleNegotiationIncoming, handleNegotiationFinal]);
 
-  // return (
-  //   <div>
-  //     <h1>Video Chat</h1>
-  //     <h4>{remoteSocketId ? "Connected" : "Waiting for someone to join..."}</h4>
-  //     {remoteSocketId && <button onClick={handleCallUser}>Call</button>}
-  //     <div>
-  //       {myStream && (
-  //         <div>
-  //           <h2>My Stream</h2>
-  //           <video
-  //             autoPlay
-  //             playsInline
-  //             muted
-  //             width="300"
-  //             height="200"
-  //             ref={(videoEl) => {
-  //               if (videoEl) videoEl.srcObject = myStream;
-  //             }}
-  //           />
-  //         </div>
-  //       )}
-  //       {remoteStream && (
-  //         <div>
-  //           <h2>Remote Stream</h2>
-  //           {/* <video
-  //             autoPlay
-  //             playsInline
-  //             width="300"
-  //             height="200"
-  //             ref={(videoEl) => {
-  //               if (videoEl) {
-  //         videoEl.srcObject = remoteStream;
-  //         videoEl.play().catch((err) =>
-  //           console.error("Error playing remote stream:", err)
-  //         );
-  //       }
-  //             }}
-  //           /> */}
-  //           <video
-  //             ref={remoteVideoRef}
-  //             autoPlay
-  //             playsInline
-  //             width="300"
-  //             height="200"
-  //             controls 
-  //           />
-  //         </div>
-  //       )}
-  //     </div>
-  //   </div>
-  // );
   return (
   <div
     style={{
@@ -209,7 +158,7 @@ const VideoChat = () => {
         marginBottom: "20px",
       }}
     >
-      {remoteSocketId ? "✅ Connected to patient" : "🔄 Waiting for patient to join..."}
+      {remoteSocketId ? " Connected to patient" : " Waiting for patient to join..."}
     </p>
 
     <button
