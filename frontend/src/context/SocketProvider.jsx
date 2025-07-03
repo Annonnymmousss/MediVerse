@@ -2,7 +2,11 @@ import React, { createContext, useMemo, useContext } from "react";
 import { io } from "socket.io-client";
 
 const SocketContext = createContext(null);
-const BackendUrl = import.meta.env.VITE_BACKEND_URL
+const backendUrl =
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:3000'
+    : import.meta.env.VITE_BACKEND_URL;
+
 
 export const useSocket = () => {
   const socket = useContext(SocketContext);
