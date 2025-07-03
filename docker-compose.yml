@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+
+  disease_prediction_backend:
+    build:
+      context: ./disease_prediction_backend
+    container_name: mediverse-api
+    ports:
+      - "5001:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: mediverse-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - disease_prediction_backend
+
+  admin:
+    build:
+      context: ./admin
+    container_name: mediverse-admin
+    ports:
+      - "5174:5174"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mediverse-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - disease_prediction_backend
+    env_file:
+      - ./backend/.env
