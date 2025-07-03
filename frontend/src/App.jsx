@@ -13,6 +13,8 @@ import AIChat from "./pages/AIChat";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ToastContainer, toast } from 'react-toastify';
+import VideoChat from "./pages/VideoCall";
+import { SocketProvider } from "./context/SocketProvider";
 
 
 const App=()=>{
@@ -32,6 +34,8 @@ const App=()=>{
           <Route path="/appointment/:docId" element={<Appointment/>} />
           <Route path="/upload-reports/:appointmentId" element={<UploadReports/>} />
           <Route path="/ai-chat/:sessionId" element={<AIChat/>} />
+          
+          <Route path="/video-chat/:appointmentId" element={<SocketProvider><VideoChat /></SocketProvider>} />
         </Routes>
       <Footer/>
     </div>
