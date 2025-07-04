@@ -1,5 +1,4 @@
 import axios from 'axios';
-import dote
 const heart_prediction = async(req,res)=>{
     try {
     const response = await axios.post('https://mediverse-1.onrender.com/predict/heart', {
