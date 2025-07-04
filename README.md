@@ -498,6 +498,18 @@ MediVerse/
 
 ### Quick Start
 
+### Run Docker 
+
+```bash
+# In root directory
+docker-compose down
+docker-compose up --build
+```
+
+### OR
+
+
+
 **1. Clone and Setup**
 ```bash
 # Clone the repository
