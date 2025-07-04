@@ -701,3 +701,37 @@ interface ServerToClientEvents {
 - Automatic logoff and encryption
 - Audit controls and integrity monitoring
 - Person or entity authentication
+
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Import Errors**: Ensure all dependencies are installed
+2. **File Not Found**: Check dataset file paths
+3. **Memory Issues**: Large datasets may require more RAM
+4. **Port Already in Use**: Change port in main.py or kill existing process
+
+### Logs
+
+Check console output for detailed error messages and request logs.
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Make changes
+4. Add tests
+5. Submit pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For issues and questions:
+- Check the troubleshooting section
+- Review error logs
+- Open an issue in the repository
+
