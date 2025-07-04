@@ -1,7 +1,8 @@
 import axios from 'axios';
+import dote
 const heart_prediction = async(req,res)=>{
     try {
-    const response = await axios.post('http://127.0.0.1:5000/predict/heart', {
+    const response = await axios.post('https://mediverse-1.onrender.com/predict/heart', {
       features: req.body.features
     });
 
@@ -14,7 +15,7 @@ const heart_prediction = async(req,res)=>{
 
 const diabetes_prediction = async(req,res)=>{
     try {
-    const response = await axios.post('http://127.0.0.1:5000/predict/diabetes', {
+    const response = await axios.post('https://mediverse-1.onrender.com/predict/diabetes', {
       features: req.body.features
     });
 
