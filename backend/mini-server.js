@@ -2,7 +2,7 @@ import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const app = express();
-const genAI = new GoogleGenerativeAI('AIzaSyDxEp_of3_BVxzcIAOIo7Q4DM96Vh2lO-s');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.get('/test', async (req, res) => {
   try {
