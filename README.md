@@ -501,6 +501,9 @@ MediVerse/
 ### Run Docker 
 
 ```bash
+# Clone the repository
+git clone https://github.com/Annonnymmousss/MediVerse.git
+cd MediVerse
 # In root directory
 docker-compose down
 docker-compose up --build
